@@ -28,7 +28,7 @@ export const customerLevelApi = {
    * 查询等级列表（所有用户可用）
    * GET /api/v1/customer-levels/list
    */
-  list: (): Promise<PageResponse<CustomerLevelResponse>> => {
+  page: (): Promise<PageResponse<CustomerLevelResponse>> => {
     return Request.get('/api/v1/customer-levels/list');
   },
 

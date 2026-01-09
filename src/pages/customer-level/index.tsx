@@ -29,8 +29,8 @@ const CustomerLevelPage: React.FC = () => {
   const fetchList = async () => {
     setLoading(true);
     try {
-      const data = await customerLevelApi.list();
-      setDataSource(data.list || []);
+      const data = await customerLevelApi.page();
+      setDataSource(data.items || []);
     } catch (error) {
       // 错误已经在axios拦截器中处理
     } finally {

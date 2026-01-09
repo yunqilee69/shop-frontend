@@ -29,7 +29,7 @@ export const customerApi = {
    * 查询客户列表（所有用户可用）
    * GET /api/v1/customers/list
    */
-  list: (params: CustomerListParams): Promise<PageResponse<CustomerListResponse>> => {
+  page: (params: CustomerListParams): Promise<PageResponse<CustomerListResponse>> => {
     return Request.get('/api/v1/customers/list', { params });
   },
 

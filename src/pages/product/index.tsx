@@ -54,8 +54,8 @@ const ProductPage: React.FC = () => {
         params.inStock = inStockFilter;
       }
 
-      const data: PageResponse<Product> = await productApi.list(params);
-      setDataSource(data.list || []);
+      const data: PageResponse<Product> = await productApi.page(params);
+      setDataSource(data.items || []);
       setPagination({
         current: page,
         pageSize,

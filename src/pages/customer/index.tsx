@@ -45,8 +45,8 @@ const CustomerPage: React.FC = () => {
   // 获取等级列表
   const fetchLevelList = async () => {
     try {
-      const data = await customerLevelApi.list();
-      setLevelList(data.list || []);
+      const data = await customerLevelApi.page();
+      setLevelList(data.items || []);
     } catch (error) {
       // 错误已经在axios拦截器中处理
     }
@@ -72,8 +72,8 @@ const CustomerPage: React.FC = () => {
         params.levelId = levelFilter;
       }
 
-      const data: PageResponse<Customer> = await customerApi.list(params);
-      setDataSource(data.list || []);
+      const data: PageResponse<Customer> = await customerApi.page(params);
+      setDataSource(data.items || []);
       setPagination({
         current: page,
         pageSize,

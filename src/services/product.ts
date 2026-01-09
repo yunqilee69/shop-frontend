@@ -31,7 +31,7 @@ export const productApi = {
    * 查询商品列表（所有用户可用）
    * GET /api/v1/products/list
    */
-  list: (params: ProductListParams): Promise<PageResponse<ProductResponse>> => {
+  page: (params: ProductListParams): Promise<PageResponse<ProductResponse>> => {
     return Request.get('/api/v1/products/list', { params });
   },
 
