@@ -26,10 +26,10 @@ export const customerLevelApi = {
 
   /**
    * 查询等级列表（所有用户可用）
-   * GET /api/v1/customer-levels/list
+   * GET /api/v1/customer-levels/page
    */
   page: (): Promise<PageResponse<CustomerLevelResponse>> => {
-    return Request.get('/api/v1/customer-levels/list');
+    return Request.get('/api/v1/customer-levels/page');
   },
 
   /**
