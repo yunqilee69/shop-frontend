@@ -55,7 +55,7 @@ const ProductPage: React.FC = () => {
       }
 
       const data: PageResponse<Product> = await productApi.list(params);
-      setDataSource(data.items || []);
+      setDataSource(data.list || []);
       setPagination({
         current: page,
         pageSize,

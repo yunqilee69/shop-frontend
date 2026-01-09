@@ -30,7 +30,7 @@ const CustomerLevelPage: React.FC = () => {
     setLoading(true);
     try {
       const data = await customerLevelApi.list();
-      setDataSource(data || []);
+      setDataSource(data.list || []);
     } catch (error) {
       // 错误已经在axios拦截器中处理
     } finally {

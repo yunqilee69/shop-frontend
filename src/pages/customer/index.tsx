@@ -46,7 +46,7 @@ const CustomerPage: React.FC = () => {
   const fetchLevelList = async () => {
     try {
       const data = await customerLevelApi.list();
-      setLevelList(data || []);
+      setLevelList(data.list || []);
     } catch (error) {
       // 错误已经在axios拦截器中处理
     }
@@ -73,7 +73,7 @@ const CustomerPage: React.FC = () => {
       }
 
       const data: PageResponse<Customer> = await customerApi.list(params);
-      setDataSource(data.items || []);
+      setDataSource(data.list || []);
       setPagination({
         current: page,
         pageSize,

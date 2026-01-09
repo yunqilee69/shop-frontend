@@ -48,7 +48,7 @@ export interface HTTPValidationError {
  */
 export interface PageResponse<T> {
   total: number;
-  items: T[];
+  list: T[];
 }
 
 // ==================== 认证相关类型 ====================
