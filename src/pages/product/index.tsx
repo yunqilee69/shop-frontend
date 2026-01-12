@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import {
   Card,
   Table,
@@ -12,88 +12,113 @@ import {
   Popconfirm,
   Switch,
   Image,
-} from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
-import { productApi } from '@/services';
-import type { Product, ProductCreate, ProductUpdate, PageResponse } from '@/types/api';
+  Upload,
+} from 'antd'
+import {
+  PlusOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  SearchOutlined,
+  UploadOutlined,
+} from '@ant-design/icons'
+import { productApi } from '@/services'
+import type { Product, ProductCreate, ProductUpdate, PageResponse } from '@/types/api'
 
 const ProductPage: React.FC = () => {
-  const [loading, setLoading] = useState(false);
-  const [dataSource, setDataSource] = useState<Product[]>([]);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [stockModalVisible, setStockModalVisible] = useState(false);
-  const [editingRecord, setEditingRecord] = useState<Product | null>(null);
-  const [stockRecord, setStockRecord] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(false)
+  const [dataSource, setDataSource] = useState<Product[]>([])
+  const [modalVisible, setModalVisible] = useState(false)
+  const [stockModalVisible, setStockModalVisible] = useState(false)
+  const [editingRecord, setEditingRecord] = useState<Product | null>(null)
+  const [stockRecord, setStockRecord] = useState<Product | null>(null)
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
     total: 0,
-  });
-  const [searchKeyword, setSearchKeyword] = useState('');
-  const [inStockFilter, setInStockFilter] = useState<boolean | undefined>();
-  const [form] = Form.useForm();
-  const [stockForm] = Form.useForm();
+  })
+  const [searchKeyword, setSearchKeyword] = useState('')
+  const [inStockFilter, setInStockFilter] = useState<boolean | undefined>()
+  const [form] = Form.useForm()
+  const [stockForm] = Form.useForm()
+  const [imageUrl, setImageUrl] = useState<string | null>(null)
+  const [uploading, setUploading] = useState(false)
 
   // 获取商品列表
-  const fetchList = async (
-    page = pagination.current,
-    pageSize = pagination.pageSize
-  ) => {
-    setLoading(true);
+  const fetchList = async (page = pagination.current, pageSize = pagination.pageSize) => {
+    setLoading(true)
     try {
       const params: any = {
         pageIndex: page,
         pageSize,
-      };
+      }
 
       if (searchKeyword) {
-        params.search = searchKeyword;
+        params.search = searchKeyword
       }
 
       if (inStockFilter !== undefined) {
-        params.inStock = inStockFilter;
+        params.inStock = inStockFilter
       }
 
-      const data: PageResponse<Product> = await productApi.page(params);
-      setDataSource(data.items || []);
+      const data: PageResponse<Product> = await productApi.page(params)
+      setDataSource(data.items || [])
       setPagination({
         current: page,
         pageSize,
         total: data.total || 0,
-      });
+      })
     } catch (error) {
       // 错误已经在axios拦截器中处理
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchList();
-  }, []);
+    fetchList()
+  }, [])
 
   // 搜索
   const handleSearch = () => {
-    fetchList(1, pagination.pageSize);
-  };
+    fetchList(1, pagination.pageSize)
+  }
 
   // 重置搜索
   const handleReset = () => {
-    setSearchKeyword('');
-    setInStockFilter(undefined);
-    fetchList(1, pagination.pageSize);
-  };
+    setSearchKeyword('')
+    setInStockFilter(undefined)
+    fetchList(1, pagination.pageSize)
+  }
+
+  // 上传图片
+  const handleUpload = async (file: File) => {
+    setUploading(true)
+    try {
+      const result = await productApi.uploadImage(file)
+      setImageUrl(result.url)
+      form.setFieldsValue({ image_url: result.url })
+      message.success('图片上传成功')
+      return false
+    } catch (error) {
+      message.error('图片上传失败')
+      return false
+    } finally {
+      setUploading(false)
+    }
+  }
 
   // 打开新增对话框
   const handleAdd = () => {
-    setEditingRecord(null);
-    form.resetFields();
-    setModalVisible(true);
-  };
+    setEditingRecord(null)
+    form.resetFields()
+    setImageUrl(null)
+    setModalVisible(true)
+  }
 
   // 打开编辑对话框
   const handleEdit = (record: Product) => {
-    setEditingRecord(record);
+    setEditingRecord(record)
+    setImageUrl(record.imageUrl)
     form.setFieldsValue({
       name: record.name,
       short_name: record.shortName,
@@ -102,14 +127,14 @@ const ProductPage: React.FC = () => {
       image_url: record.imageUrl,
       purchase_price: record.purchasePrice,
       stock_qty: record.stockQty,
-    });
-    setModalVisible(true);
-  };
+    })
+    setModalVisible(true)
+  }
 
   // 提交表单
   const handleSubmit = async () => {
     try {
-      const values = await form.validateFields();
+      const values = await form.validateFields()
 
       if (editingRecord) {
         // 更新
@@ -122,11 +147,11 @@ const ProductPage: React.FC = () => {
           image_url: values.image_url,
           purchase_price: values.purchase_price,
           stock_qty: values.stock_qty,
-        };
-        await productApi.update(params);
-        message.success('更新成功');
-        setModalVisible(false);
-        fetchList();
+        }
+        await productApi.update(params)
+        message.success('更新成功')
+        setModalVisible(false)
+        fetchList()
       } else {
         // 新增
         const params: ProductCreate = {
@@ -137,55 +162,55 @@ const ProductPage: React.FC = () => {
           image_url: values.image_url,
           purchase_price: values.purchase_price,
           stock_qty: values.stock_qty,
-        };
-        await productApi.create(params);
-        message.success('创建成功');
-        setModalVisible(false);
-        fetchList();
+        }
+        await productApi.create(params)
+        message.success('创建成功')
+        setModalVisible(false)
+        fetchList()
       }
     } catch (error) {
       // 错误已经在axios拦截器中处理
     }
-  };
+  }
 
   // 删除商品
   const handleDelete = async (record: Product) => {
     try {
-      await productApi.delete({ id: record.id });
-      message.success('删除成功');
-      fetchList();
+      await productApi.delete({ id: record.id })
+      message.success('删除成功')
+      fetchList()
     } catch (error) {
       // 错误已经在axios拦截器中处理
     }
-  };
+  }
 
   // 打开库存管理对话框
   const handleStock = (record: Product) => {
-    setStockRecord(record);
+    setStockRecord(record)
     stockForm.setFieldsValue({
       delta: 0,
-    });
-    setStockModalVisible(true);
-  };
+    })
+    setStockModalVisible(true)
+  }
 
   // 提交库存更新
   const handleStockSubmit = async () => {
-    if (!stockRecord) return;
+    if (!stockRecord) return
 
     try {
-      const values = await stockForm.validateFields();
+      const values = await stockForm.validateFields()
       await productApi.updateStock({
         id: stockRecord.id,
         delta: values.delta,
-      });
+      })
 
-      message.success('库存更新成功');
-      setStockModalVisible(false);
-      fetchList();
+      message.success('库存更新成功')
+      setStockModalVisible(false)
+      fetchList()
     } catch (error) {
       // 错误已经在axios拦截器中处理
     }
-  };
+  }
 
   const columns = [
     {
@@ -286,7 +311,7 @@ const ProductPage: React.FC = () => {
         </Space>
       ),
     },
-  ];
+  ]
 
   return (
     <Card
@@ -301,16 +326,16 @@ const ProductPage: React.FC = () => {
         <Input.Search
           placeholder="搜索商品名称、简称、条形码"
           value={searchKeyword}
-          onChange={(e) => setSearchKeyword(e.target.value)}
+          onChange={e => setSearchKeyword(e.target.value)}
           onSearch={handleSearch}
           style={{ width: 400 }}
           enterButton={<SearchOutlined />}
         />
         <Switch
           checked={inStockFilter}
-          onChange={(checked) => {
-            setInStockFilter(checked ? true : undefined);
-            fetchList(1, pagination.pageSize);
+          onChange={checked => {
+            setInStockFilter(checked ? true : undefined)
+            fetchList(1, pagination.pageSize)
           }}
           checkedChildren="有库存"
           unCheckedChildren="全部"
@@ -325,7 +350,7 @@ const ProductPage: React.FC = () => {
         columns={columns}
         pagination={pagination}
         scroll={{ x: 1400 }}
-        onChange={(paginationInfo) => fetchList(paginationInfo.current, paginationInfo.pageSize)}
+        onChange={paginationInfo => fetchList(paginationInfo.current, paginationInfo.pageSize)}
       />
 
       {/* 新增/编辑商品对话框 */}
@@ -357,26 +382,30 @@ const ProductPage: React.FC = () => {
             <Input placeholder="请输入简称" />
           </Form.Item>
 
-          <Form.Item
-            label="规格"
-            name="spec"
-          >
+          <Form.Item label="规格" name="spec">
             <Input placeholder="请输入规格，如：500g" />
           </Form.Item>
 
-          <Form.Item
-            label="条形码"
-            name="barcode"
-          >
+          <Form.Item label="条形码" name="barcode">
             <Input placeholder="请输入条形码" />
           </Form.Item>
 
-          <Form.Item
-            label="商品图片URL"
-            name="image_url"
-            rules={[{ type: 'url', message: '请输入有效的URL' }]}
-          >
-            <Input placeholder="请输入商品图片URL" />
+          <Form.Item label="商品图片" name="image_url">
+            <Upload
+              listType="picture-card"
+              beforeUpload={handleUpload}
+              showUploadList={false}
+              disabled={uploading}
+            >
+              {imageUrl ? (
+                <Image src={imageUrl} alt="商品图片" style={{ width: '100%' }} />
+              ) : (
+                <div>
+                  <UploadOutlined />
+                  <div style={{ marginTop: 8 }}>上传图片</div>
+                </div>
+              )}
+            </Upload>
           </Form.Item>
 
           <Form.Item
@@ -440,15 +469,12 @@ const ProductPage: React.FC = () => {
             ]}
             tooltip="正数表示增加库存，负数表示减少库存"
           >
-            <InputNumber
-              placeholder="请输入库存变化量"
-              style={{ width: '100%' }}
-            />
+            <InputNumber placeholder="请输入库存变化量" style={{ width: '100%' }} />
           </Form.Item>
         </Form>
       </Modal>
     </Card>
-  );
-};
+  )
+}
 
-export default ProductPage;
+export default ProductPage

@@ -2,7 +2,7 @@
  * 商品管理 API
  */
 
-import Request from '@/utils/request';
+import Request from '@/utils/request'
 import type {
   ProductCreate,
   ProductUpdate,
@@ -13,7 +13,7 @@ import type {
   ProductDetailResponse,
   ProductListParams,
   PageResponse,
-} from '@/types/api';
+} from '@/types/api'
 
 /**
  * 商品管理 API
@@ -24,7 +24,7 @@ export const productApi = {
    * POST /api/v1/products/create
    */
   create: (data: ProductCreate): Promise<ProductResponse> => {
-    return Request.post('/api/v1/products/create', data);
+    return Request.post('/api/v1/products/create', data)
   },
 
   /**
@@ -32,7 +32,7 @@ export const productApi = {
    * GET /api/v1/products/page
    */
   page: (params: ProductListParams): Promise<PageResponse<ProductResponse>> => {
-    return Request.get('/api/v1/products/page', { params });
+    return Request.get('/api/v1/products/page', { params })
   },
 
   /**
@@ -40,7 +40,7 @@ export const productApi = {
    * POST /api/v1/products/detail
    */
   detail: (data: ProductById): Promise<ProductDetailResponse> => {
-    return Request.post('/api/v1/products/detail', data);
+    return Request.post('/api/v1/products/detail', data)
   },
 
   /**
@@ -48,7 +48,7 @@ export const productApi = {
    * POST /api/v1/products/update
    */
   update: (data: ProductUpdate): Promise<ProductResponse> => {
-    return Request.post('/api/v1/products/update', data);
+    return Request.post('/api/v1/products/update', data)
   },
 
   /**
@@ -56,7 +56,7 @@ export const productApi = {
    * POST /api/v1/products/delete
    */
   delete: (data: ProductDelete): Promise<void> => {
-    return Request.post('/api/v1/products/delete', data);
+    return Request.post('/api/v1/products/delete', data)
   },
 
   /**
@@ -64,6 +64,20 @@ export const productApi = {
    * POST /api/v1/products/stock
    */
   updateStock: (data: StockUpdate): Promise<void> => {
-    return Request.post('/api/v1/products/stock', data);
+    return Request.post('/api/v1/products/stock', data)
   },
-};
+
+  /**
+   * 上传图片
+   * POST /api/v1/upload/image
+   */
+  uploadImage: (file: File): Promise<{ url: string }> => {
+    const formData = new FormData()
+    formData.append('file', file)
+    return Request.post('/api/v1/upload/image', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+  },
+}
