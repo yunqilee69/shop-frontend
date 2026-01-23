@@ -1,51 +1,59 @@
 /**
- * 价格管理 API
+ * 商品价格管理 API
  */
 
-import Request from '@/utils/request';
-import type {
-  PriceCreate,
-  PriceDelete,
-  PriceByProduct,
-  BatchPriceCreate,
-  PriceResponse,
-  ProductPriceListResponse,
-  BatchPriceResponse,
-} from '@/types/api';
+import Request from '@/utils/request'
+import type { PriceCreate, PriceUpdate, PriceResponse, BatchPriceUpdate } from '@/types/api'
 
 /**
- * 价格管理 API
+ * 商品价格管理 API
  */
 export const priceApi = {
   /**
-   * 设置商品等级价格（仅管理员可用）
-   * POST /api/v1/prices/set
+   * 创建商品价格
+   * POST /api/product-prices
    */
-  set: (data: PriceCreate): Promise<PriceResponse> => {
-    return Request.post('/api/v1/prices/set', data);
+  create: (data: PriceCreate): Promise<PriceResponse> => {
+    return Request.post('/api/product-prices', data)
   },
 
   /**
-   * 批量设置商品价格（仅管理员可用）
-   * POST /api/v1/prices/batch
+   * 更新商品价格
+   * PUT /api/product-prices/{id}
    */
-  batchSet: (data: BatchPriceCreate): Promise<BatchPriceResponse> => {
-    return Request.post('/api/v1/prices/batch', data);
+  update: (id: number, data: PriceUpdate): Promise<PriceResponse> => {
+    return Request.put(`/api/product-prices/${id}`, data)
   },
 
   /**
-   * 查询商品价格列表（所有用户可用）
-   * POST /api/v1/prices/product-prices
+   * 删除商品价格
+   * DELETE /api/product-prices/{id}
    */
-  getProductPrices: (data: PriceByProduct): Promise<ProductPriceListResponse> => {
-    return Request.post('/api/v1/prices/product-prices', data);
+  delete: (id: number): Promise<void> => {
+    return Request.delete(`/api/product-prices/${id}`)
   },
 
   /**
-   * 删除价格（仅管理员可用）
-   * POST /api/v1/prices/delete
+   * 查询商品价格详情
+   * GET /api/product-prices/{id}
    */
-  delete: (data: PriceDelete): Promise<void> => {
-    return Request.post('/api/v1/prices/delete', data);
+  getById: (id: number): Promise<PriceResponse> => {
+    return Request.get(`/api/product-prices/${id}`)
   },
-};
+
+  /**
+   * 查询商品的所有价格
+   * GET /api/product-prices/product/{productId}
+   */
+  getByProductId: (productId: number): Promise<PriceResponse[]> => {
+    return Request.get(`/api/product-prices/product/${productId}`)
+  },
+
+  /**
+   * 批量更新商品价格
+   * PUT /api/product-prices/batch
+   */
+  batchUpdate: (data: BatchPriceUpdate): Promise<void> => {
+    return Request.put('/api/product-prices/batch', data)
+  },
+}

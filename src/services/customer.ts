@@ -2,58 +2,72 @@
  * 客户管理 API
  */
 
-import Request from '@/utils/request';
+import Request from '@/utils/request'
 import type {
   CustomerCreate,
   CustomerUpdate,
-  CustomerDelete,
-  CustomerById,
-  CustomerListResponse,
+  CustomerResponse,
   CustomerListParams,
   PageResponse,
-} from '@/types/api';
+} from '@/types/api'
 
 /**
  * 客户管理 API
  */
 export const customerApi = {
   /**
-   * 创建客户（所有用户可用）
-   * POST /api/v1/customers/create
+   * 创建客户
+   * POST /api/customers
    */
-  create: (data: CustomerCreate): Promise<CustomerListResponse> => {
-    return Request.post('/api/v1/customers/create', data);
+  create: (data: CustomerCreate): Promise<CustomerResponse> => {
+    return Request.post('/api/customers', data)
   },
 
   /**
-   * 查询客户列表（所有用户可用）
-   * GET /api/v1/customers/page
+   * 更新客户
+   * PUT /api/customers/{id}
    */
-  page: (params: CustomerListParams): Promise<PageResponse<CustomerListResponse>> => {
-    return Request.get('/api/v1/customers/page', { params });
+  update: (id: number, data: CustomerUpdate): Promise<CustomerResponse> => {
+    return Request.put(`/api/customers/${id}`, data)
   },
 
   /**
-   * 查询客户详情（所有用户可用）
-   * POST /api/v1/customers/detail
+   * 删除客户
+   * DELETE /api/customers/{id}
    */
-  detail: (data: CustomerById): Promise<CustomerListResponse> => {
-    return Request.post('/api/v1/customers/detail', data);
+  delete: (id: number): Promise<void> => {
+    return Request.delete(`/api/customers/${id}`)
   },
 
   /**
-   * 更新客户信息（仅管理员可用）
-   * POST /api/v1/customers/update
+   * 查询客户详情
+   * GET /api/customers/{id}
    */
-  update: (data: CustomerUpdate): Promise<CustomerListResponse> => {
-    return Request.post('/api/v1/customers/update', data);
+  getById: (id: number): Promise<CustomerResponse> => {
+    return Request.get(`/api/customers/${id}`)
   },
 
   /**
-   * 删除客户（仅管理员可用）
-   * POST /api/v1/customers/delete
+   * 根据手机号查询客户
+   * GET /api/customers/phone/{phone}
    */
-  delete: (data: CustomerDelete): Promise<void> => {
-    return Request.post('/api/v1/customers/delete', data);
+  getByPhone: (phone: string): Promise<CustomerResponse> => {
+    return Request.get(`/api/customers/phone/${phone}`)
   },
-};
+
+  /**
+   * 查询客户列表
+   * GET /api/customers
+   */
+  list: (params?: CustomerListParams): Promise<CustomerResponse[]> => {
+    return Request.get('/api/customers', { params })
+  },
+
+  /**
+   * 分页查询客户
+   * GET /api/customers/page
+   */
+  page: (params: CustomerListParams): Promise<PageResponse<CustomerResponse>> => {
+    return Request.get('/api/customers/page', { params })
+  },
+}

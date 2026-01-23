@@ -1,58 +1,65 @@
 /**
- * 会员等级管理 API
+ * 客户等级管理 API
  */
 
-import Request from '@/utils/request';
+import Request from '@/utils/request'
 import type {
   CustomerLevelCreate,
   CustomerLevelUpdate,
-  CustomerLevelDelete,
-  CustomerLevelById,
   CustomerLevelResponse,
+  CustomerLevelListParams,
   PageResponse,
-} from '@/types/api';
+} from '@/types/api'
 
 /**
- * 会员等级 API
+ * 客户等级管理 API
  */
 export const customerLevelApi = {
   /**
-   * 创建会员等级（仅管理员可用）
-   * POST /api/v1/customer-levels/create
+   * 创建客户等级
+   * POST /api/customer-levels
    */
   create: (data: CustomerLevelCreate): Promise<CustomerLevelResponse> => {
-    return Request.post('/api/v1/customer-levels/create', data);
+    return Request.post('/api/customer-levels', data)
   },
 
   /**
-   * 查询等级列表（所有用户可用）
-   * GET /api/v1/customer-levels/page
+   * 更新客户等级
+   * PUT /api/customer-levels/{id}
    */
-  page: (): Promise<PageResponse<CustomerLevelResponse>> => {
-    return Request.get('/api/v1/customer-levels/page');
+  update: (id: number, data: CustomerLevelUpdate): Promise<CustomerLevelResponse> => {
+    return Request.put(`/api/customer-levels/${id}`, data)
   },
 
   /**
-   * 查询等级详情（所有用户可用）
-   * POST /api/v1/customer-levels/detail
+   * 删除客户等级
+   * DELETE /api/customer-levels/{id}
    */
-  detail: (data: CustomerLevelById): Promise<CustomerLevelResponse> => {
-    return Request.post('/api/v1/customer-levels/detail', data);
+  delete: (id: number): Promise<void> => {
+    return Request.delete(`/api/customer-levels/${id}`)
   },
 
   /**
-   * 更新会员等级（仅管理员可用）
-   * POST /api/v1/customer-levels/update
+   * 查询客户等级详情
+   * GET /api/customer-levels/{id}
    */
-  update: (data: CustomerLevelUpdate): Promise<CustomerLevelResponse> => {
-    return Request.post('/api/v1/customer-levels/update', data);
+  getById: (id: number): Promise<CustomerLevelResponse> => {
+    return Request.get(`/api/customer-levels/${id}`)
   },
 
   /**
-   * 删除会员等级（仅管理员可用）
-   * POST /api/v1/customer-levels/delete
+   * 查询客户等级列表
+   * GET /api/customer-levels
    */
-  delete: (data: CustomerLevelDelete): Promise<void> => {
-    return Request.post('/api/v1/customer-levels/delete', data);
+  list: (params?: CustomerLevelListParams): Promise<CustomerLevelResponse[]> => {
+    return Request.get('/api/customer-levels', { params })
   },
-};
+
+  /**
+   * 分页查询客户等级
+   * GET /api/customer-levels/page
+   */
+  page: (params?: CustomerLevelListParams): Promise<PageResponse<CustomerLevelResponse>> => {
+    return Request.get('/api/customer-levels/page', { params })
+  },
+}

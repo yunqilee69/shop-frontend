@@ -1,54 +1,33 @@
 /**
  * API 类型定义
- * 基于 OpenAPI 规范自动生成
+ * 基于后端 API 文档
  */
 
 // ==================== 基础类型 ====================
 
 /**
- * 响应状态码枚举
+ * 统一返回格式
  */
-export enum ResponseCode {
-  SUCCESS = 200,
-  BAD_REQUEST = 400,
-  UNAUTHORIZED = 401,
-  FORBIDDEN = 403,
-  NOT_FOUND = 404,
-  CONFLICT = 409,
-  INTERNAL_SERVER_ERROR = 500,
-}
-
-/**
- * 统一响应格式
- */
-export interface Response<T = any> {
-  code: ResponseCode;
-  msg: string;
-  data: T | null;
-}
-
-/**
- * HTTP 验证错误
- */
-export interface ValidationError {
-  loc: (string | number)[];
-  msg: string;
-  type: string;
-}
-
-/**
- * HTTP 验证错误响应
- */
-export interface HTTPValidationError {
-  detail: ValidationError[];
+export interface ApiResult<T = any> {
+  code: string
+  message: string
+  data: T | null
 }
 
 /**
  * 分页响应
  */
 export interface PageResponse<T> {
-  total: number;
-  items: T[];
+  data: T[]
+  total: number
+}
+
+/**
+ * 分页参数
+ */
+export interface PageParams {
+  pageNum?: number
+  pageSize?: number
 }
 
 // ==================== 认证相关类型 ====================
@@ -57,150 +36,47 @@ export interface PageResponse<T> {
  * 用户创建
  */
 export interface UserCreate {
-  username: string;
-  name: string;
-  password: string;
-  admin_flag?: boolean;
-  phone?: string | null;
+  username: string
+  name: string
+  password: string
+  admin_flag?: boolean
+  phone?: string | null
 }
 
 /**
  * 用户登录
  */
 export interface UserLogin {
-  username: string;
-  password: string;
+  username: string
+  password: string
 }
 
 /**
  * 用户响应
  */
 export interface UserResponse {
-  id: number;
-  username: string;
-  name: string;
-  adminFlag: boolean;
-  phone: string | null;
+  id: number
+  username: string
+  name: string
+  adminFlag: boolean
+  phone: string | null
 }
 
 /**
  * Token 响应
  */
 export interface TokenResponse {
-  accessToken: string;
-  tokenType?: string;
-  user: UserResponse;
+  accessToken: string
+  tokenType?: string
+  user: UserResponse
 }
 
 /**
  * 修改密码
  */
 export interface ChangePassword {
-  old_password: string;
-  new_password: string;
-}
-
-// ==================== 会员等级相关类型 ====================
-
-/**
- * 会员等级创建
- */
-export interface CustomerLevelCreate {
-  level_name: string;
-}
-
-/**
- * 会员等级更新
- */
-export interface CustomerLevelUpdate {
-  id: number;
-  level_name: string;
-}
-
-/**
- * 会员等级删除
- */
-export interface CustomerLevelDelete {
-  id: number;
-}
-
-/**
- * 根据ID查询会员等级
- */
-export interface CustomerLevelById {
-  id: number;
-}
-
-/**
- * 会员等级响应
- */
-export interface CustomerLevelResponse {
-  id: number;
-  levelName: string;
-  createdAt: string;
-}
-
-// ==================== 客户相关类型 ====================
-
-/**
- * 客户创建
- */
-export interface CustomerCreate {
-  level_id: number;
-  name: string;
-  phone: string;
-  contact_person?: string | null;
-  address: string;
-}
-
-/**
- * 客户更新
- */
-export interface CustomerUpdate {
-  id: number;
-  level_id?: number | null;
-  name?: string | null;
-  phone?: string | null;
-  contact_person?: string | null;
-  address?: string | null;
-}
-
-/**
- * 客户删除
- */
-export interface CustomerDelete {
-  id: number;
-}
-
-/**
- * 根据ID查询客户
- */
-export interface CustomerById {
-  id: number;
-}
-
-/**
- * 客户列表响应
- */
-export interface CustomerListResponse {
-  id: number;
-  levelId: number;
-  levelName: string | null;
-  name: string;
-  phone: string;
-  contactPerson: string | null;
-  address: string;
-  createdAt: string;
-}
-
-/**
- * 客户列表查询参数
- */
-export interface CustomerListParams {
-  pageIndex?: number;
-  pageSize?: number;
-  search?: string | null;
-  levelId?: number | null;
+  old_password: string
+  new_password: string
 }
 
 // ==================== 商品相关类型 ====================
@@ -209,206 +85,250 @@ export interface CustomerListParams {
  * 商品创建
  */
 export interface ProductCreate {
-  name: string;
-  short_name: string;
-  spec?: string | null;
-  barcode?: string | null;
-  image_url?: string | null;
-  purchase_price: string | number;
-  stock_qty?: number;
+  name: string
+  spec?: string | null
+  stock: number
+  storageLocation?: string | null
+  purchasePrice: number
+  defaultPrice: number
+  barcode: string
 }
 
 /**
  * 商品更新
  */
 export interface ProductUpdate {
-  id: number;
-  name?: string | null;
-  short_name?: string | null;
-  spec?: string | null;
-  barcode?: string | null;
-  image_url?: string | null;
-  purchase_price?: string | number | null;
-  stock_qty?: number | null;
-}
-
-/**
- * 商品删除
- */
-export interface ProductDelete {
-  id: number;
-}
-
-/**
- * 根据ID查询商品
- */
-export interface ProductById {
-  id: number;
+  id: number
+  name?: string | null
+  spec?: string | null
+  stock?: number | null
+  storageLocation?: string | null
+  purchasePrice?: number | null
+  defaultPrice?: number | null
+  barcode?: string | null
 }
 
 /**
  * 商品响应
  */
 export interface ProductResponse {
-  id: number;
-  name: string;
-  shortName: string;
-  spec: string | null;
-  barcode: string | null;
-  imageUrl: string | null;
-  purchasePrice: string;
-  stockQty: number;
-  createdAt: string;
-}
-
-/**
- * 商品详情响应
- */
-export interface ProductDetailResponse {
-  id: number;
-  name: string;
-  shortName: string;
-  spec: string | null;
-  barcode: string | null;
-  imageUrl: string | null;
-  purchasePrice: string;
-  stockQty: number;
-  createdAt: string;
-  prices: ProductPriceInDetail[];
-}
-
-/**
- * 商品详情中的价格信息
- */
-export interface ProductPriceInDetail {
-  levelId: number;
-  levelName: string | null;
-  salePrice: string;
+  id: number
+  name: string
+  spec: string | null
+  stock: number
+  storageLocation: string | null
+  purchasePrice: number
+  defaultPrice: number
+  barcode: string
+  createTime: string
+  updateTime: string
 }
 
 /**
  * 商品列表查询参数
  */
-export interface ProductListParams {
-  pageIndex?: number;
-  pageSize?: number;
-  search?: string | null;
-  inStock?: boolean | null;
+export interface ProductListParams extends PageParams {
+  name?: string | null
+  barcode?: string | null
 }
 
-/**
- * 库存更新
- */
-export interface StockUpdate {
-  id: number;
-  delta: number;
-  reason?: string | null;
-}
-
-// ==================== 价格相关类型 ====================
+// ==================== 商品价格相关类型 ====================
 
 /**
  * 价格创建
  */
 export interface PriceCreate {
-  product_id: number;
-  level_id: number;
-  sale_price: string | number;
+  productId: number
+  customerLevelId: number
+  price: number
 }
 
 /**
- * 价格项
+ * 价格更新
  */
-export interface PriceItem {
-  level_id: number;
-  sale_price: string | number;
-}
-
-/**
- * 批量价格创建
- */
-export interface BatchPriceCreate {
-  product_id: number;
-  prices: PriceItem[];
-}
-
-/**
- * 价格删除
- */
-export interface PriceDelete {
-  id: number;
-}
-
-/**
- * 根据商品ID查询价格
- */
-export interface PriceByProduct {
-  product_id: number;
+export interface PriceUpdate {
+  id: number
+  price: number
 }
 
 /**
  * 价格响应
  */
 export interface PriceResponse {
-  id: number;
-  productId: number;
-  levelId: number;
-  salePrice: string;
-  createdAt: string;
+  id: number
+  productId: number
+  productName: string
+  customerLevelId: number
+  customerLevelName: string
+  price: number
 }
 
 /**
- * 价格项响应
+ * 批量价格更新项
  */
-export interface PriceItemResponse {
-  id: number;
-  levelId: number;
-  levelName: string | null;
-  salePrice: string;
-  updatedAt: string;
+export interface BatchPriceUpdateItem {
+  id: number
+  price: number
 }
 
 /**
- * 批量价格响应
+ * 批量价格更新
  */
-export interface BatchPriceResponse {
-  productId: number;
-  createdCount: number;
-  updatedCount: number;
+export interface BatchPriceUpdate {
+  items: BatchPriceUpdateItem[]
+}
+
+// ==================== 客户相关类型 ====================
+
+/**
+ * 性别枚举
+ */
+export enum GenderEnum {
+  UNKNOWN = 0,
+  MALE = 1,
+  FEMALE = 2,
 }
 
 /**
- * 商品价格列表响应
+ * 客户创建
  */
-export interface ProductPriceListResponse {
-  productId: number;
-  productName: string;
-  prices: PriceItemResponse[];
+export interface CustomerCreate {
+  name: string
+  gender?: number
+  address?: string | null
+  phone: string
+  customerLevelId?: number | null
 }
 
-// ==================== 便捷类型别名 ====================
+/**
+ * 客户更新
+ */
+export interface CustomerUpdate {
+  id: number
+  name?: string | null
+  gender?: number | null
+  address?: string | null
+  phone?: string | null
+  customerLevelId?: number | null
+}
 
 /**
- * 会员等级实体（用于页面显示）
+ * 客户响应
  */
-export type CustomerLevel = CustomerLevelResponse;
+export interface CustomerResponse {
+  id: number
+  name: string
+  gender: number
+  address: string | null
+  phone: string
+  customerLevelId: number | null
+  customerLevelName: string | null
+  createTime: string
+  updateTime: string
+}
 
 /**
- * 客户实体（用于页面显示）
+ * 客户列表查询参数
  */
-export type Customer = CustomerListResponse;
+export interface CustomerListParams extends PageParams {
+  name?: string | null
+  phone?: string | null
+  customerLevelId?: number | null
+}
+
+// ==================== 客户等级相关类型 ====================
 
 /**
- * 商品实体（用于页面显示）
+ * 客户等级创建
  */
-export type Product = ProductResponse;
+export interface CustomerLevelCreate {
+  name: string
+  levelCode: string
+  priority?: number
+  description?: string | null
+}
 
 /**
- * 商品价格实体（用于页面显示）
+ * 客户等级更新
  */
-export type ProductPrice = PriceItemResponse;
+export interface CustomerLevelUpdate {
+  id: number
+  name?: string | null
+  levelCode?: string | null
+  priority?: number | null
+  description?: string | null
+}
 
 /**
- * 设置价格输入
+ * 客户等级响应
  */
-export type PriceSetInput = PriceCreate;
+export interface CustomerLevelResponse {
+  id: number
+  name: string
+  levelCode: string
+  priority: number
+  description: string | null
+  createTime: string
+  updateTime: string
+}
+
+/**
+ * 客户等级列表查询参数
+ */
+export interface CustomerLevelListParams extends PageParams {
+  name?: string | null
+  levelCode?: string | null
+}
+
+// ==================== 订单相关类型 ====================
+
+/**
+ * 订单明细创建
+ */
+export interface OrderItemCreate {
+  productId: number
+  quantity: number
+}
+
+/**
+ * 订单创建
+ */
+export interface OrderCreate {
+  customerId: number
+  items: OrderItemCreate[]
+}
+
+/**
+ * 订单明细响应
+ */
+export interface OrderItemResponse {
+  id: number
+  productId: number
+  productName: string
+  quantity: number
+  price: number
+  subtotal: number
+}
+
+/**
+ * 订单响应
+ */
+export interface OrderResponse {
+  id: number
+  orderNo: string
+  customerId: number
+  customerName: string
+  totalPrice: number
+  orderTime: string
+  createTime?: string
+  updateTime?: string
+  items: OrderItemResponse[]
+}
+
+/**
+ * 订单列表查询参数
+ */
+export interface OrderListParams extends PageParams {
+  orderNo?: string | null
+  customerId?: number | null
+}
